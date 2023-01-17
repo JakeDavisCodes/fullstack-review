@@ -1,5 +1,10 @@
 const express = require('express');
+const git = require('../helpers/github.js')
+const db = require('../database');
 let app = express();
+app.use(express.json());
+app.use(express.static('client/dist'));
+
 
 // TODO - your code here!
 // Set up static file service for files in the `client/dist` directory.
@@ -11,11 +16,36 @@ app.post('/repos', function (req, res) {
   // This route should take the github username provided
   // and get the repo information from the github API, then
   // save the repo information in the database
+  console.log('recieved post to repos', req.body.user);
+
+  let callback = (err) => {
+    console.log('CB EXEC')
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(201);
+    }
+  }
+
+  git.getReposByUsername(req.body.user, (err) => {
+    console.log('CB EXEC')
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(201);
+    }
+  })
+
 });
 
 app.get('/repos', function (req, res) {
-  // TODO - your code here!
-  // This route should send back the top 25 repos
+  db.read((err, repos) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.status(200).json(repos);
+    }
+  })
 });
 
 let port = 1128;

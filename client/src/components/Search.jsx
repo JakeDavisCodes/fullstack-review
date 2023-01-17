@@ -9,6 +9,7 @@ const Search = ({ onSearch }) => {
   }
 
   const search = () => {
+    console.log(term);
     onSearch(term);
   }
 
